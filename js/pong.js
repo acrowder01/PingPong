@@ -16,8 +16,8 @@ const user= {
 }
 
 //create the computer paddle
-const comp = {
-    x: canvas.width -10
+const computer = {
+    x: canvas.width -10,
     y: canvas.height/2 - 100/2,
     width: 10,
     height: 100,
@@ -27,7 +27,7 @@ const comp = {
 
 //create the ball
 const ball = {
-    x : canvas.width /2,
+    x: canvas.width /2,
     y: canvas.height /2,
     speed: 5,
     velocityX: 5,
@@ -46,6 +46,22 @@ function drawRect(x,y,w,h,color){
 }
 drawRect(0,0,canvas.width, canvas.height, "black")
 
+// create the net
+const net = {
+    x: canvas.width/2,
+    y:0,
+    width: 2,
+    height: 10,
+    color: "white"
+}
+
+//draw net function to draw the net on canvas
+function drawNet(){
+    for(let i = 0; i <= canvas.height; i+=15){
+        drawRect(net.x, net.y + i, net.width, net.height, net.color);
+    }
+}
+
 //creating drawing my cicrle for the ball
 function drawCircle(x, y, radius, color) {
     ctx.fillStyle = color;
@@ -56,7 +72,7 @@ function drawCircle(x, y, radius, color) {
     ctx.fill();
   }
   // calling function with paramaterss to draw my ball
-  drawCircle(100,100,50,'white')
+//   drawCircle(100,100,50,'white')
 
   //draw text
   function drawText(text, x,y, color){
@@ -65,7 +81,42 @@ function drawCircle(x, y, radius, color) {
       ctx.fillText(text,x,y)
   }
 
-  drawText("ace", 300,200,"white")
+//   drawText("ace", 300,200,"white")
 
-//   Render function
+//   Render the game
 // render function draws everything on to canvas
+function render(){
+    // clear the canvas
+    drawRect(0,0,canvas.width, canvas.height, "black" )
+    
+    // draw the net
+    drawNet();
+
+    //draw the score
+    drawText(user.Score, canvas.width/4, canvas.height/5,"white");
+    drawText(computer.Score, 3*canvas.width/4, canvas.height/5,"white");
+
+    //draw the paddles
+     drawRect(user.x, user.y, user.width, user.height, user.color);
+    drawRect(computer.x, computer.y, computer.width, computer.height, computer.color);
+
+    //draw ball
+    drawCircle(ball.x, ball.y, ball.radius, ball.color);
+}
+
+//update function - update the game logics, movements, scores etc...
+function update(){
+    ball.x += ball.velocityX;
+    ball.y += ball.velocityY;
+
+}
+
+
+//initalize game
+  function game(){
+      render();
+  }
+
+  //loop
+  const framePerSecond = 50;
+  setInterval(game, 1000/framePerSecond);
