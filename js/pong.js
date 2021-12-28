@@ -7,8 +7,8 @@ const ctx = canvas.getContext('2d');
 //create user object
 //create paddle
 const user= {
-    x: 0,
-    y: canvas.height/2 - 100/2,
+    x: 10,
+    y: canvas.height/2 -  100/2 ,
     width: 10,
     height: 100,
     color: "White",
@@ -17,7 +17,7 @@ const user= {
 
 //create the computer paddle
 const computer = {
-    x: canvas.width -10,
+    x: canvas.width -20,
     y: canvas.height/2 - 100/2,
     width: 10,
     height: 100,
@@ -29,6 +29,7 @@ const computer = {
 const ball = {
     x: canvas.width /2,
     y: canvas.height /2,
+    radius: 10,
     speed: 5,
     velocityX: 5,
     velocityY: 5,
@@ -63,11 +64,11 @@ function drawNet(){
 }
 
 //creating drawing my cicrle for the ball
-function drawCircle(x, y, radius, color) {
+function drawCircle(x, y, r, color) {
     ctx.fillStyle = color;
     ctx.beginPath();
     // syntax --> arc(x, y, radius, startAngle, endAngle, antiClockwise_or_not)
-    ctx.arc(x, y, radius, 0, Math.PI * 2, false); // π * 2 Radians = 360 degrees
+    ctx.arc(x, y, r, 0, Math.PI * 2, false); // π * 2 Radians = 360 degrees
     ctx.closePath();
     ctx.fill();
   }
@@ -104,16 +105,51 @@ function render(){
     drawCircle(ball.x, ball.y, ball.radius, ball.color);
 }
 
+//control the user paddle
+canvas.addEventListener("mousemove", movepaddle);
+function movepaddle(evt){
+    let rect = canvas.getBoundingClientRect();
+
+    user.y = evt.clientY - rect.top - user.height/2 
+
+}
+
+//collision detection
+function collision(b,p){
+    b.top = b.y -b.radius;
+    b.bottom = b.y + b.radius;
+    b.left = b.x -b.radius;
+
+    p.top = p.y;
+    p.bottom = p.y + p.height;
+    p.left = p.x;
+    p.right = p.x + p.width;
+
+    if(ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0){
+        ball.velocityY = -ball.velocityY;
+    }
+
+    let player = (ball.x < canvas.width/2) ? user : computer;
+    if(collision(ball,player)) {
+
+    }
+}
+
 //update function - update the game logics, movements, scores etc...
 function update(){
     ball.x += ball.velocityX;
     ball.y += ball.velocityY;
+
+    if (ball.y + ball.radius > canvas.height || ball.y-ball.radius < 0){
+        ball.velocityY = -ball.velocityY;
+    }
 
 }
 
 
 //initalize game
   function game(){
+      update();
       render();
   }
 
